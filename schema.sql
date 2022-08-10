@@ -37,3 +37,28 @@ SELECT * FROM animals;
  -- set constraint for primary key own-id
 ALTER TABLE animals ADD CONSTRAINT fk_owner_table FOREIGN KEY(owner_id) REFERENCES owners(id);
 
+-- create vets table
+
+CREATE TABLE vets(
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name VARCHAR(250),
+  age INT,
+  date_of_graduation DATE
+);
+-- create specializations table
+CREATE TABLE specializations(
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  species_id INT,
+  vets_id INT,
+  CONSTRAINT fk_species FOREIGN KEY(species_id) REFERENCES species(id),
+  CONSTRAINT fk_vets FOREIGN KEY(vets_id) REFERENCES vets(id)
+);
+-- create visits table
+CREATE TABLE visits(
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  animals_id INT,
+  vets_id INT,
+  date_of_visit DATE,
+  CONSTRAINT fk_visit_animals FOREIGN KEY(animals_id) REFERENCES animals(id),
+  CONSTRAINT fk_visits_vet FOREIGN KEY(vets_id) REFERENCES vets(id)
+);
