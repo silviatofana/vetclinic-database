@@ -1,11 +1,3 @@
-ALTER TABLE animals DROP COLUMN ID; -----> deletes a specific column(ID)
-
-ALTER TABLE animals ADD ID SERIAL PRIMARY KEY;
-
-ALTER DATABASE vet_clinic DROP TABLE animals; ------> deletes the database's table animals
-
-ALTER TABLE animals 
-
 UPDATE animals SET Species = 'Unspecified'; ----> sets all the species column valuesf to unspecified
 
 UPDATE animals SET Neutered = 'false' WHERE Name = 'Squirtle'; 
