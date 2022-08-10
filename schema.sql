@@ -1,12 +1,4 @@
-/* Database schema to keep the structure of entire database. */
+CREATE TABLE animals ( ID int, Name varchar(100), Date_of_birth date, Escape_attempts int, Neutered boolean, Weight_kg decimal );
+ALTER TABLE animals ADD Species varchar(100);
 
-CREATE TABLE animals(
-  id            INT GENERATED ALWAYS AS IDENTITY,
-  name    VARCHAR(250), date_of_birth date, 
-  escape_attempts INT, 
-  neutered boolean, 
-  weight_kg decimal,
-  species VARCHAR(250),
-  PRIMARY KEY(id),
-);
 
