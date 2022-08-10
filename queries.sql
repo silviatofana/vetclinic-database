@@ -1,61 +1,59 @@
-/*Queries that provide answers to the questions from all projects.*/
+ALTER TABLE animals DROP COLUMN ID; -----> deletes a specific column(ID)
 
-SELECT * FROM animals WHERE name LIKE '%mon';
-SELECT name FROM animals WHERE date_of_birth >='2016-01-01' and date_of_birth<='2019-12-31';
-SELECT  name FROM animals WHERE  neutered = 'true' and escape_attempts < 3 ;
-SELECT date_of_birth FROM animals WHERE name = 'Agumon' or name = 'Pikachu' ;
-SELECT name, escape_attempts FROM animals WHERE  weight_kg > 10.5;
-SELECT * FROM animals WHERE neutered = 'true';
-SELECT * FROM animals WHERE name != 'Gabumon' ; 
+ALTER TABLE animals ADD ID SERIAL PRIMARY KEY;
+
+ALTER TABLE animals 
+
+UPDATE animals SET Species = 'Unspecified'; ----> sets all the species column valuesf to unspecified
+
+UPDATE animals SET Neutered = 'false' WHERE Name = 'Squirtle'; 
+
+UPDATE animals SET Date_of_birth = '2005-06-12' WHERE Name = 'Angemon';
+
+UPDATE animals SET Neutered = 'false' WHERE Name = 'Pikachu'; -----> this is a request
+
+UPDATE animals SET Species = 'digimon' WHERE Name like '%mon'; ----> Update the animals table by setting the species column to digimon for all animals that have a name ending in mon.
+
+UPDATE animals SET Species = 'pokemon' WHERE Species = 'Unspecified'; ----> Update the animals table by setting the species column to pokemon for all animals that don't have species already set.
+
+UPDATE animals SET Weight_kg = Weight_kg * -1;
+
+UPDATE animals SET Weight_kg = Weight_kg * -1 WHERE Weight_kg < 0 ;
+
+SELECT * FROM animals; ---> to check whether the updated item changed or not
+
+SELECT * FROM animals WHERE Name like '%mon';
+
+SELECT Name FROM animals WHERE Date_of_birth >= '2016-01-01' AND Date_of_birth <= '2019-12-31';
+
+SELECT Name FROM animals WHERE Escape_attempts < 3 AND Neutered = 'true';
+
+SELECT Date_of_birth FROM animals WHERE Name = 'Agumon' OR Name = 'Pikachu';
+
+SELECT Name, Escape_attempts FROM animals WHERE weight_kg > 10.5;
+
+SELECT * FROM animals WHERE Neutered;
+
+SELECT * FROM animals WHERE Name != 'Gabumon'; 
+
 SELECT * FROM animals WHERE weight_kg >= 10.4 AND weight_kg <= 17.3;
 
 BEGIN;
-UPDATE animals SET species = 'unspecified';
-SELECT * FROM animals;
-ROLLBACK;
 
-BEGIN;
- UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
+SAVEPOINT save_point;
 
- UPDATE animals SET species = 'pokemon' WHERE species IS null;
- SELECT * FROM animals;
-COMMIT;
+DELETE  FROM animals; ------> deletes the animals rows
 
-BEGIN;
-DELETE FROM animals;
-SELECT * FROM animals;
-ROLLBACK;
-SELECT * FROM animals;
+DELETE FROM animals WHERE Date_of_birth > '2022-01-01';
 
+SELECT COUNT(*) AS Number_of_animals FROM animals;
 
-BEGIN;
-DELETE FROM animals
-WHERE date_of_birth > '2022-01-01';
+SELECT COUNT( Escape_attempts ) AS Kind_animals FROM animals WHERE Escape_attempts = 0;
 
-SAVEPOINT saved_point;
-UPDATE animals
-SET weight_kg = weight_kg * (-1);
-ROLLBACK TO saved_point;
-UPDATE animals
-SET weight_kg = weight_kg * (-1)
-WHERE weight_kg < 0;
-COMMIT;
-SELECT * FROM animals;
+SELECT AVG( weight_kg ) AS Weight_avg FROM animals;
 
-/*How many animals are there*/
-SELECT COUNT(*) FROM animals;
+SELECT Name, Escape_attempts, Neutered FROM animals WHERE Escape_attempts = ( SELECT MAX(Escape_attempts) FROM animals );
 
-/*How many animals have never tried to escape*/
-SELECT COUNT(*) FROM animals WHERE escape_attempts = 0;
+SELECT Name, weight_kg FROM animals WHERE weight_kg = ( SELECT MAX(weight_kg) FROM animals ) AND weight_kg = ( SELECT MIN(weight_kg) FROM animals );
 
-/*What is the average weight of animals*/
-SELECT AVG(weight_kg) FROM animals;
-
-/*Who escapes the most, neutered or not neutered animals*/
-SELECT neutered, MAX(escape_attempts) FROM animals GROUP BY neutered;
-
-/*What is the minimum and maximum weight of each type of animal*/
-SELECT species, MAX(weight_kg), MIN(weight_kg) FROM animals GROUP BY species;
-
-/*What is the average number of escape attempts per animal type of those born between 1990 and 2000*/
-SELECT species, AVG(escape_attempts) FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
+SELECT AVG( Escape_attempts ) AS escape_Average FROM animals WHERE Date_of_birth >= '1990-01-01' AND Date_of_birth <= '2000-01-01';
