@@ -9,6 +9,8 @@ SELECT * FROM animals WHERE neutered = 'true';
 SELECT * FROM animals WHERE name != 'Gabumon' ; 
 SELECT * FROM animals WHERE weight_kg >= 10.4 AND weight_kg <= 17.3;
 
+/*TRANSCTION DONE HERE*/
+
 BEGIN;
 UPDATE animals SET species = 'unspecified';
 SELECT * FROM animals;
@@ -42,6 +44,8 @@ WHERE weight_kg < 0;
 COMMIT;
 SELECT * FROM animals;
 
+/*AGGREGATE*/
+
 /*How many animals are there*/
 SELECT COUNT(*) FROM animals;
 
@@ -59,3 +63,49 @@ SELECT species, MAX(weight_kg), MIN(weight_kg) FROM animals GROUP BY species;
 
 /*What is the average number of escape attempts per animal type of those born between 1990 and 2000*/
 SELECT species, AVG(escape_attempts) FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
+
+--  Write queries (using JOIN) to answer
+
+SELECT name,
+  full_name
+FROM animals
+  JOIN owners ON animals.owner_id = owners.id
+WHERE full_name = 'Melody Pond';
+
+
+
+SELECT name AS Animals,
+    full_name AS Owners
+FROM animals
+    RIGHT JOIN owners ON animals.owner_id = owners.id;
+
+SELECT COUNT(animals.name) AS Animals_count,
+    species.name AS Specie
+FROM animals
+    JOIN species ON animals.species_id = species.id
+GROUP BY species.name;
+
+SELECT owners.full_name,
+    animals.name AS name_of_animals,
+    species.name AS name_of_species
+FROM animals
+    JOIN owners ON owners.id = animals.owner_id
+    JOIN species ON species.id = animals.species_id
+WHERE owners.full_name = 'Jennifer Orwell'
+    AND species.name = 'Digimon';
+
+SELECT name,
+    escape_attempts,
+    full_name
+FROM animals
+    JOIN owners ON owners.id = animals.owner_id
+WHERE owners.full_name = 'Dean Winchester'
+    AND animals.escape_attempts = 0;
+
+SELECT full_name,
+    COUNT(animals.owner_id) AS Owns
+FROM owners
+    JOIN animals ON animals.owner_id = owners.id
+GROUP BY full_name
+ORDER BY Owns DESC;
+
