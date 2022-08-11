@@ -106,11 +106,17 @@ SELECT * FROM animals;
 
 -- insert data into vets table
 
-INSERT INTO vets (name, age, date_of_graduation)
-VALUES ('Vet William Tatcher', 45, 'Apr 23 2000'),
-('Vet Maisy Smith', 26 ,'Jan 17 2019'),
-('Vet Stephanie Mendez', 64, 'May 04 1981'),
-('Vet Jack Harkness', 38,'Jun 08 2008');
+   INSERT INTO vets (name, age, date_of_graduation)
+   VALUES ('William Tatcher', 45, '2000-04-23');
+
+   INSERT INTO vets (name, age, date_of_graduation)
+   VALUES ('Maisy Smith', 26, '2019-01-17');
+
+   INSERT INTO vets (name, age, date_of_graduation)
+   VALUES ('Stephanie Mendez', 64, '1981-05-04');
+
+   INSERT INTO vets (name, age, date_of_graduation)
+   VALUES ('Jack Harknes', 38, '2008-06-08');
 
 -- insert data into specializations
 
@@ -129,23 +135,11 @@ VALUES ( (
 
         (
           (
-  SELECT id
-  FROM species
-  WHERE name = 'Digimon'
-    OR name = 'Pokemon'
-),
-(
-  SELECT id
-  FROM vets
-  WHERE name = 'Vet Stephanie Mendez'
-)
-),
+   INSERT INTO specializations (species_id, vet_id)
+ VALUES ((SELECT id FROM vets WHERE name = 'Stephanie Mendez'), (SELECT id FROM species WHERE name = 'Digimon'));
 
-( (
-            SELECT id
-            FROM species
-            WHERE name = 'Digimon'
-        ),
+ INSERT INTO specializations (species_id, vet_id)
+ VALUES ((SELECT id FROM vets WHERE name = 'Jack Harkness'), (SELECT id FROM species WHERE name = 'Digimon'));
         (
             SELECT id
             FROM vets
