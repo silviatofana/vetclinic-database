@@ -20,13 +20,13 @@ INSERT INTO animals ( ID, Name, Date_of_birth, Escape_attempts, Neutered, Weight
 VALUES ( 7, 'Squirtle', '1993-04-02', 3, 'true', '-12.13', 'Unspecified' );
 
 INSERT INTO animals ( ID, Name, Date_of_birth, Escape_attempts, Neutered, Weight_kg,Species )
-VALUES ( 7, 'Angemon', '2005-06-12', 1, 'true', '-45', '' );
+VALUES ( 8, 'Angemon', '2005-06-12', 1, 'true', '-45', '' );
 
 INSERT INTO animals ( ID, Name, Date_of_birth, Escape_attempts, Neutered, Weight_kg,Species )
-VALUES ( 8, 'Boarmon', '2005-01-07', 7, 'true', '20.4', '' );
+VALUES ( 9, 'Boarmon', '2005-01-07', 7, 'true', '20.4', '' );
 
 INSERT INTO animals ( ID, Name, Date_of_birth, Escape_attempts, Neutered, Weight_kg,Species )
 VALUES ( 10, 'Blossom', '1998-10-13', 3, 'true', '17', '' );
 
 INSERT INTO animals ( ID, Name, Date_of_birth, Escape_attempts, Neutered, Weight_kg,Species )
-VALUES ( 11, 'Ditto', '2022-05-14', 4, '', '22', '' );
+VALUES ( 11, 'Ditto', '2022-05-14', 4, 'true', '22', '' );
