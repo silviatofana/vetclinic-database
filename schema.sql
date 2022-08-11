@@ -56,8 +56,8 @@ CREATE TABLE specializations(
 -- create visits table
 CREATE TABLE visits(
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  animals_id INT,
-  vets_id INT,
+  animal_id INT,
+  vet_id INT,
   date_of_visit DATE,
   CONSTRAINT fk_visit_animals FOREIGN KEY(animals_id) REFERENCES animals(id),
   CONSTRAINT fk_visits_vet FOREIGN KEY(vets_id) REFERENCES vets(id)
