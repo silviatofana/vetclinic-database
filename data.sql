@@ -143,7 +143,7 @@ VALUES ( (
         (
             SELECT id
             FROM vets
-            WHERE name = 'Vet Jack Harkness'
+            WHERE name = 'Jack Harkness'
         )
         );
 
