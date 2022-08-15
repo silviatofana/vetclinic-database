@@ -425,6 +425,3 @@ select
     'owner_' || generate_series(1, 2500000) || '@mail.com';
 
 
-
-
-
