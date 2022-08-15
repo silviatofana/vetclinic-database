@@ -1,50 +1,70 @@
 /* Database schema to keep the structure of entire database. */
+
 CREATE DATABASE vet_clinic;
-postgres=# \c vet_clinic
+
 CREATE TABLE animals(
-    id bigserial PRIMARY KEY,
-    name VARCHAR(50),
-    date_of_birth DATE,
-    escape_attempts INT,
-    neutered BIT,
-    weight_kg REAL,
-    COLUMN owner_id INT);
+  id INT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  date_of_birth DATE,
+  escape_attempts INT,
+  neutered BOOLEAN,
+  weight_kg DECIMAL
+);
 
-ALTER TABLE animals ADD COLUMN species VARCHAR(30);
+ALTER TABLE animals 
+  Add species TEXT;
 
-CREATE TABLE owners (
-    id bigserial PRIMARY KEY,
-    full_name varchar(50) NOT NULL,
-    age INT);
+CREATE TABLE owners(
+  id SERIAL PRIMARY KEY,
+  full_name TEXT,
+  age INT 
+)
 
-CREATE TABLE species (
- id INT PRIMARY KEY,
- name varchar(50) NOT NULL);
+CREATE TABLE species(
+  id SERIAL PRIMARY KEY,
+  name TEXT
+)
 
-ALTER TABLE animals DROP column species;
-ALTER TABLE animals ADD COLUMN species_id INT;
-ALTER TABLE animals ADD COLUMN owner_id INT;
-ALTER TABLE animals ADD CONSTRAINT fk_species_animal FOREIGN KEY (species_id) REFERENCES species (id);
-ALTER TABLE animals ADD CONSTRAINT fk_owner_animal FOREIGN KEY (owner_id) REFERENCES owners (id);
+ALTER TABLE animals DROP COLUMN id;
+ALTER TABLE animals ADD COLUMN id SERIAL PRIMARY KEY;
+ALTER TABLE animals DROP COLUMN species;
 
-CREATE TABLE vets (
-    id bigserial primary key,
-    name varchar(50) NOT NULL,
-    age INT,
-    date_of_graduation DATE);
+ALTER TABLE animals ADD COLUMN species_id INT,
+  ADD CONSTRAINT fk_species
+  FOREIGN KEY (species_id)
+  REFERENCES species (id);
+
+ALTER TABLE animals ADD COLUMN owner_id INT,
+  ADD CONSTRAINT fk_owners
+  FOREIGN KEY (owner_id)
+  REFERENCES owners (id);
+
+CREATE TABLE vets(
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  age INT,
+  date_of_graduation date
+);
 
 CREATE TABLE specializations (
-    vet_id INT,
-    species_id INT);
-ALTER TABLE specializations ADD CONSTRAINT fk_species_animal FOREIGN KEY (species_id) REFERENCES species (id);
-ALTER TABLE specializations ADD CONSTRAINT fk_owner_animal FOREIGN KEY (vet_id) REFERENCES vets (id);
+  id SERIAL PRIMARY KEY,
+  species_id INT,
+  vets_id INT,
+  CONSTRAINT fk_species FOREIGN KEY(species_id) REFERENCES species(id) ON DELETE CASCADE,
+  CONSTRAINT fk_vets FOREIGN KEY(vets_id) REFERENCES vets(id) ON DELETE CASCADE
+);
 
 CREATE TABLE visits (
-    animal_id INT,
-    vet_id INT,
-    date_of_visit DATE);
-ALTER TABLE visits ADD CONSTRAINT fk_species_visits FOREIGN KEY (animal_id) REFERENCES animals (id);
-ALTER TABLE visits ADD CONSTRAINT fk_owner_visits FOREIGN KEY (vet_id) REFERENCES vets (id);
+  id SERIAL PRIMARY KEY,
+  animals_id INT,
+  vets_id INT,
+  date DATE,
+  CONSTRAINT fk_animals FOREIGN KEY(animals_id) REFERENCES animals(id),
+  CONSTRAINT fk_vets FOREIGN KEY(vets_id) REFERENCES vets(id)
+);
 
--- Performance Audit
 ALTER TABLE owners ADD COLUMN email VARCHAR(120);
+
+CREATE INDEX animals_id_index ON visits(animals_id);
+CREATE INDEX vets_id_index ON visits(vets_id, animals_id, date);
+CREATE INDEX email_index ON owners(email ASC);
