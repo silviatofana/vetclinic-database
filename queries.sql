@@ -1,111 +1,70 @@
-/*Queries that provide answers to the questions from all projects.*/
+SELECT * FROM animals; ---> to check whether the updated item changed or not
 
-SELECT * FROM animals WHERE name LIKE '%mon';
-SELECT name FROM animals WHERE date_of_birth >='2016-01-01' and date_of_birth<='2019-12-31';
-SELECT  name FROM animals WHERE  neutered = 'true' and escape_attempts < 3 ;
-SELECT date_of_birth FROM animals WHERE name = 'Agumon' or name = 'Pikachu' ;
-SELECT name, escape_attempts FROM animals WHERE  weight_kg > 10.5;
-SELECT * FROM animals WHERE neutered = 'true';
-SELECT * FROM animals WHERE name != 'Gabumon' ; 
+SELECT * FROM animals WHERE Name like '%mon';
+
+SELECT Name FROM animals WHERE Date_of_birth >= '2016-01-01' AND Date_of_birth <= '2019-12-31';
+
+SELECT Name FROM animals WHERE Escape_attempts < 3 AND Neutered = 'true';
+
+SELECT Date_of_birth FROM animals WHERE Name = 'Agumon' OR Name = 'Pikachu';
+
+SELECT Name, Escape_attempts FROM animals WHERE weight_kg > 10.5;
+
+SELECT * FROM animals WHERE Neutered;
+
+SELECT * FROM animals WHERE Name != 'Gabumon'; 
+
 SELECT * FROM animals WHERE weight_kg >= 10.4 AND weight_kg <= 17.3;
 
-/*TRANSCTION DONE HERE*/
-
 BEGIN;
-UPDATE animals SET species = 'unspecified';
-SELECT * FROM animals;
-ROLLBACK;
 
-BEGIN;
- UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
+SAVEPOINT save_point;
 
- UPDATE animals SET species = 'pokemon' WHERE species IS null;
- SELECT * FROM animals;
-COMMIT;
+DELETE  FROM animals; ------> deletes the animals rows
 
-BEGIN;
-DELETE FROM animals;
-SELECT * FROM animals;
-ROLLBACK;
-SELECT * FROM animals;
+DELETE FROM animals WHERE Date_of_birth > '2022-01-01';
 
+SELECT COUNT(*) AS Number_of_animals FROM animals;
 
-BEGIN;
-DELETE FROM animals
-WHERE date_of_birth > '2022-01-01';
+SELECT COUNT( Escape_attempts ) AS Kind_animals FROM animals WHERE Escape_attempts = 0;
 
-SAVEPOINT saved_point;
-UPDATE animals
-SET weight_kg = weight_kg * (-1);
-ROLLBACK TO saved_point;
-UPDATE animals
-SET weight_kg = weight_kg * (-1)
-WHERE weight_kg < 0;
-COMMIT;
-SELECT * FROM animals;
+SELECT AVG( weight_kg ) AS Weight_avg FROM animals;
 
-/*AGGREGATE*/
+SELECT Name, Escape_attempts, Neutered FROM animals WHERE Escape_attempts = ( SELECT MAX(Escape_attempts) FROM animals );
 
-/*How many animals are there*/
-SELECT COUNT(*) FROM animals;
+SELECT Name, weight_kg FROM animals WHERE weight_kg = ( SELECT MAX(weight_kg) FROM animals ) AND weight_kg = ( SELECT MIN(weight_kg) FROM animals );
 
-/*How many animals have never tried to escape*/
-SELECT COUNT(*) FROM animals WHERE escape_attempts = 0;
+SELECT AVG( Escape_attempts ) AS escape_Average FROM animals WHERE Date_of_birth >= '1990-01-01' AND Date_of_birth <= '2000-01-01';
 
-/*What is the average weight of animals*/
-SELECT AVG(weight_kg) FROM animals;
-
-/*Who escapes the most, neutered or not neutered animals*/
-SELECT neutered, MAX(escape_attempts) FROM animals GROUP BY neutered;
-
-/*What is the minimum and maximum weight of each type of animal*/
-SELECT species, MAX(weight_kg), MIN(weight_kg) FROM animals GROUP BY species;
-
-/*What is the average number of escape attempts per animal type of those born between 1990 and 2000*/
-SELECT species, AVG(escape_attempts) FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
-
---  Write queries (using JOIN) to answer
-
-SELECT name,
-  full_name
-FROM animals
-  JOIN owners ON animals.owner_id = owners.id
-WHERE full_name = 'Melody Pond';
+SELECT animals.owner_id FROM animals INNER JOIN owner ON animals.owner_id = owner.full_name GROUP BY owner_id ORDER BY COUNT(*) DESC LIMIT 1;
 
 
 
-SELECT name AS Animals,
-    full_name AS Owners
-FROM animals
-    RIGHT JOIN owners ON animals.owner_id = owners.id;
 
-SELECT COUNT(animals.name) AS Animals_count,
-    species.name AS Specie
-FROM animals
-    JOIN species ON animals.species_id = species.id
-GROUP BY species.name;
 
-SELECT owners.full_name,
-    animals.name AS name_of_animals,
-    species.name AS name_of_species
-FROM animals
-    JOIN owners ON owners.id = animals.owner_id
-    JOIN species ON species.id = animals.species_id
-WHERE owners.full_name = 'Jennifer Orwell'
-    AND species.name = 'Digimon';
+SELECT animals.name, visits.vet, visits.visit_date FROM animals INNER JOIN visits ON visits.animal = animals.name WHERE visits.vet = 'William Tatcher' ORDER BY visits.visit_date DESC LIMIT 1;
 
-SELECT name,
-    escape_attempts,
-    full_name
-FROM animals
-    JOIN owners ON owners.id = animals.owner_id
-WHERE owners.full_name = 'Dean Winchester'
-    AND animals.escape_attempts = 0;
+SELECT COUNT(*) FROM visits WHERE vet = 'Stephanie Mendez'; 
 
-SELECT full_name,
-    COUNT(animals.owner_id) AS Owns
-FROM owners
-    JOIN animals ON animals.owner_id = owners.id
-GROUP BY full_name
-ORDER BY Owns DESC;
+SELECT specializations.vet_name, specializations.species FROM visits INNER JOIN specializations ON specializations.vet_name = visits.vet WHERE vet = 'William Tatcher';
+
+SELECT specializations.vet_name, specializations.species FROM visits INNER JOIN specializations ON specializations.vet_name = visits.vet WHERE vet = 'Jack Harkness';
+
+SELECT specializations.vet_name, specializations.species FROM visits INNER JOIN specializations ON specializations.vet_name = visits.vet WHERE vet = 'Stephanie Mendez';
+
+SELECT animals.name, visits.vet, visits.visit_date FROM animals INNER JOIN visits ON visits.animal = animals.name WHERE visits.vet = 'Stephanie Mendez' AND visits.visit_date BETWEEN '2020-4-1' AND '2020-8-30';
+
+SELECT animal FROM visits GROUP BY animal ORDER BY COUNT(*) DESC LIMIT 1;
+
+SELECT animals.name, visits.vet, visits.visit_date FROM animals INNER JOIN visits ON visits.animal = animals.name ORDER BY visits.visit_date LIMIT 1;
+
+SELECT COUNT(*) FROM visits INNER JOIN specializations ON specializations.vet_name = visits.vet WHERE species = 'Pokemon' AND animal NOT LIKE '%mon';
+
+SELECT * FROM visits GROUP BY animal ORDER BY COUNT(*) DESC LIMIT 1;
+
+----INNER JOIN-----
+
+SELECT owner.full_name, animals.name FROM animals INNER JOIN owner ON owner.id = animals.owner_id WHERE owner.full_name='Melody Pond';
+SELECT species.name, animals.name FROM animals INNER JOIN species ON species.id = animals.species_id WHERE species.name='Pokemon';
+SELECT owner.full_name, animals.name FROM animals INNER JOIN owner ON owner.full_name = animals.owner_id;
 
