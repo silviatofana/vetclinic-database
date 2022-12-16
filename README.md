@@ -39,7 +39,6 @@ To get a local copy up and running follow these simple example steps.
 
 ## Author
 
-
 👤 **Silvia Tofana **
 
 - GitHub: [@silviatofana](https://github.com/silviatofana)
